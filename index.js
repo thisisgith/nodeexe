@@ -1,6 +1,12 @@
 const express = require('express');
 const app = express();
+const mongoose = require('mongoose');
 const genres = require('./routes/genres');
+
+//connect to mongodb database
+mongoose.connect('mongodb://localhost:27017/playground',{ useUnifiedTopology: true,useNewUrlParser: true })
+    .then(() => console.log('connected to playground database'))
+    .catch((err) => console.log(err))
 
 //used to parse the body
 app.use(express.json());
