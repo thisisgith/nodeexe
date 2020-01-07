@@ -7,7 +7,7 @@ const {validate, Genre} = require('../models/genres');
  */
 router.get('/', async (req,res) => {
     try {
-        const genres = await Genre.find();
+        const genres = await Genre.find().sort("name");
         res.send(genres);
     } catch(err) {
         res.status(500).send(err.message)
