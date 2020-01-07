@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const genres = require('./routes/genres');
+const customers = require('./routes/customers');
 
 //connect to mongodb database
 mongoose.connect('mongodb://localhost:27017/playground',{ useUnifiedTopology: true,useNewUrlParser: true })
@@ -16,7 +17,9 @@ app.get('/',(req,res) => {
 });
 
 //import the custom routes
-app.use('/api/genres/',genres);
+app.use('/api/genres/', genres);
+app.use('/api/customers', customers);
 
+// Port assignment statement
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening to port : ${port}`));
