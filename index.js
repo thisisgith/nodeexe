@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require('mongoose');
 const genres = require('./routes/genres');
 const customers = require('./routes/customers');
+const movies = require('./routes/movies');
 
 //connect to mongodb database
 mongoose.connect('mongodb://localhost:27017/playground',{ useUnifiedTopology: true,useNewUrlParser: true })
@@ -18,6 +19,7 @@ app.get('/',(req,res) => {
 
 //import the custom routes
 app.use('/api/genres/', genres);
+app.use('/api/movies', movies);
 app.use('/api/customers', customers);
 
 // Port assignment statement
