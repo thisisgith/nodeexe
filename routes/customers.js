@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Customer, validate } = require('../models/customers');
+const auth = require('../middleware/auth');
 
 // used to return all customers
 router.get('/', async (req,res) => {
@@ -26,7 +27,7 @@ router.get('/:id', async (req,res) => {
 });
 
 // used to add customers
-router.post('/', async (req,res) => {
+router.post('/', auth, async (req,res) => {
     const { error } = validate(req.body);
     if(error)
         return res.status(400).send(error.details[0].message)
@@ -44,7 +45,7 @@ router.post('/', async (req,res) => {
 });
 
 // used to update specific customers
-router.put('/:id', async (req,res) => {
+router.put('/:id', auth, async (req,res) => {
     const { error } = validate(req.body);
     if(error)
         return res.status(400).send(error.details[0].message)
@@ -66,7 +67,7 @@ router.put('/:id', async (req,res) => {
 });
 
 // used to delete specific customers
-router.delete('/:id', async (req,res) => {
+router.delete('/:id', auth, async (req,res) => {
     try {
         const id = req.params.id;
         const customer = await Customer.findByIdAndRemove(id);
@@ -77,4 +78,5 @@ router.delete('/:id', async (req,res) => {
         res.status(500).send(err.message)
     }
 });
+
 module.exports = router;

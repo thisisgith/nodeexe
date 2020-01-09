@@ -3,6 +3,7 @@ const router = express.Router();
 const { Rental, validate } = require('../models/rentals');
 const { Customer } = require('../models/customers');
 const { Movie } = require('../models/movies');
+const auth = require('../middleware/auth');
 const Fawn = require('fawn');
 const mongoose = require('mongoose');
 Fawn.init(mongoose);
@@ -29,7 +30,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
     const { error } = validate(req.body);
     if (error)
         return res.status(400).send(error.details[0].message);

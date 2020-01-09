@@ -3,6 +3,17 @@ const router = express.Router();
 const { User, validate } = require('../models/users');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
+const auth = require('../middleware/auth');
+
+//Get details of logged in user
+router.get('/me', auth, async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).select('-password');
+        res.send(user);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
 
 //Registering the new user
 router.post('/', async (req, res) => {
@@ -21,9 +32,9 @@ router.post('/', async (req, res) => {
 
         await user.save();
 
-       const token = user.generateAuthToken();
+        const token = user.generateAuthToken();
 
-        res.header('x-auth-token',token).send(_.pick(user, ['_id', 'name', 'email']));
+        res.header('x-auth-token', token).send(_.pick(user, ['_id', 'name', 'email']));
     } catch (err) {
         res.status(500).send(err.message);
     }

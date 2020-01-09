@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {validate, Genre} = require('../models/genres');
+const auth = require('../middleware/auth');
 
 /**
  * Used to return all genres
@@ -34,7 +35,7 @@ router.get('/:id', async (req,res) => {
 /**
  * Used to add specfic genre
  */
-router.post('/', async (req,res) => {
+router.post('/', auth, async (req,res) => {
 
     const { error } = validate(req.body) ;
 
@@ -58,7 +59,7 @@ router.post('/', async (req,res) => {
 /**
  * Used to update specfic genre
  */
-router.put('/:id', async (req,res) => {
+router.put('/:id', auth, async (req,res) => {
 
     const id = req.params.id;
     const { error } = validate(req.body) ;
@@ -85,7 +86,7 @@ router.put('/:id', async (req,res) => {
 /**
  * Used to delete specfic genre
  */
-router.delete('/:id', async (req,res) => {
+router.delete('/:id', auth, async (req,res) => {
 
     const id = req.params.id;
     try {
