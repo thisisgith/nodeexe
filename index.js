@@ -3,6 +3,7 @@ const app = express();
 const Joi = require('@hapi/joi');
 Joi.objectId = require('joi-objectid')(Joi);
 const mongoose = require('mongoose');
+const config = require('config');
 
 const genres = require('./routes/genres');
 const customers = require('./routes/customers');
@@ -10,6 +11,12 @@ const movies = require('./routes/movies');
 const rentals = require('./routes/rentals');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
+
+//env variable checking
+if(!config.get('jwtPrivateKey')) {
+    console.error("FATAL Error : jwtPrivateKey is not set");
+    process.exit(1);
+}
 
 //connect to mongodb database
 mongoose.connect('mongodb://localhost:27017/playground',{ useUnifiedTopology: true,useNewUrlParser: true })
