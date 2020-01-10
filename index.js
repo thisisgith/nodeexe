@@ -44,7 +44,7 @@ app.use('/api/customers', customers);
 app.use('/api/rentals', rentals);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
-
+ 
 // Port assignment statement
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening to port : ${port}`));
