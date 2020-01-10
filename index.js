@@ -4,6 +4,8 @@ const Joi = require('@hapi/joi');
 Joi.objectId = require('joi-objectid')(Joi);
 const mongoose = require('mongoose');
 const config = require('config');
+const helmet = require('helmet');
+const compression = require('compression');
 
 const genres = require('./routes/genres');
 const customers = require('./routes/customers');
@@ -12,15 +14,20 @@ const rentals = require('./routes/rentals');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
 
+//for production security we use this packages
+app.use(helmet());
+app.use(compression());
+
 //env variable checking
-if(!config.get('jwtPrivateKey')) {
-    console.error("FATAL Error : jwtPrivateKey is not set");
+if(!config.get('jwtPrivateKey') || !config.get('db')) {
+    console.error("FATAL Error : jwtPrivateKey or db is not set");
     process.exit(1);
 }
 
+const db = config.get('db');
 //connect to mongodb database
-mongoose.connect('mongodb://localhost:27017/playground',{ useUnifiedTopology: true,useNewUrlParser: true })
-    .then(() => console.log('connected to playground database'))
+mongoose.connect(db,{ useUnifiedTopology: true,useNewUrlParser: true })
+    .then(() => console.log(`connected to ${db}`))
     .catch((err) => console.log(err))
 
 //used to parse the body

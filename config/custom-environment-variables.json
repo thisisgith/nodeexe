@@ -1,3 +1,4 @@
 {
-    "jwtPrivateKey": "appJwtKey"
+    "jwtPrivateKey": "appJwtKey",
+    "db":"appdb"
 }
