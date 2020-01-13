@@ -85,6 +85,33 @@ router.put('/:id', auth, async (req,res) => {
 });
 
 /**
+ * Used to update specfic genre (using patch--- to be used only if small things to be updated)
+ */
+router.patch('/:id', auth, async (req,res) => {
+
+    const id = req.params.id;
+    const { error } = validate(req.body) ;
+    if ( error ) {
+        return res.status(400).send( error.details[0].message)
+    }
+
+    try {
+        const genre = await Genre.findById(id);
+        if(!genre) {
+            return res.status(404).send('genre is not available');
+         }
+
+         genre.set({name: req.body.name});
+
+         await genre.save();
+
+         res.send(genre);
+        } catch(err) {
+        res.status(500).send(err.message)
+    }   
+});
+
+/**
  * Used to delete specfic genre
  */
 router.delete('/:id', [ auth, admin], async (req,res) => {
