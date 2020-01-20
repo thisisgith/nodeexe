@@ -8,6 +8,7 @@ const helmet = require('helmet');
 const compression = require('compression');
 
 const genres = require('./routes/genres');
+const sql_genres = require('./routes/sql_genres');
 const customers = require('./routes/customers');
 const movies = require('./routes/movies');
 const rentals = require('./routes/rentals');
@@ -39,6 +40,7 @@ app.get('/',(req,res) => {
 
 //import the custom routes
 app.use('/api/genres/', genres);
+app.use('/api/sqlgenres/', sql_genres);
 app.use('/api/movies', movies);
 app.use('/api/customers', customers);
 app.use('/api/rentals', rentals);
