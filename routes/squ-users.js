@@ -3,13 +3,12 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
+const { QueryTypes } = require('sequelize');
+const sequelize = require('../util/seq-database');
 
 router.get('/', auth, async (req, res) => {
     try {
-        const users = await User.findAll({
-            attributes: ['id', 'name', 'email'],
-        });
-
+        const [users] = await sequelize.query(' SELECT `id`, `name`, `email` FROM `users`');
         res.send(users);
     } catch (err) {
         res.status(500).send(err.message);
@@ -19,12 +18,13 @@ router.get('/', auth, async (req, res) => {
 router.get('/:id', auth, async (req, res) => {
     const id = req.params.id;
     try {
-        const user = await User.findByPk(id, {
-            attributes: ['id', 'name', 'email']
+        const [user] = await sequelize.query(' SELECT `id`, `name`, `email` FROM `users` WHERE `id`=?',{
+            replacements:[id]
         });
-        if (!user)
+
+        if (user.length === 0)
             return res.status(404).send("!!!User not Available!!!");
-        res.send(user);
+        res.send(user[0]);
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -36,14 +36,14 @@ router.post('/', auth, async (req, res) => {
         return res.status(400).send(error.details[0].message);
 
     try {
-        const user = User.build({
-            name: req.body.name,
-            email: req.body.email,
-        })
+        const date = new Date();
+        const [userId] = await sequelize.query(' INSERT into users (`name`,`email`,`createdAt`,`updatedAt`) values(?,?,?,?)',{
+            replacements:[req.body.name,req.body.email,date,date]
+        });
 
-        await user.save();
+        //await user.save();
 
-        res.send(user);
+        res.send(`User created with id : ${userId}`);
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -56,18 +56,20 @@ router.put('/:id', auth, async (req, res) => {
         return res.status(400).send(error.details[0].message);
 
     try {
-        const user = await User.findByPk(id);
-        if (!user)
+        const [user,l] = await sequelize.query('UPDATE `users` SET `name`= :name, `email`= :email, `updatedAt`= :updatedAt WHERE `id`= :id',{
+            replacements:{
+                name: req.body.name,
+                email: req.body.email,
+                updatedAt: new Date(),
+                id: id
+            }
+        });
+        if (user.affectedRows === 0)
             return res.status(404).send("!!!User not Available!!!");
 
-        user.set({
-            name: req.body.name,
-            email: req.body.email,
-        });
+        
 
-        await user.save();
-
-        res.send(user);
+        res.send("user details updated successfully");
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -76,12 +78,13 @@ router.put('/:id', auth, async (req, res) => {
 router.delete('/:id', [auth, admin], async (req, res) => {
     const id = req.params.id;
     try {
-        const user = await User.findByPk(id);
-        if (!user)
-            return res.status(404).send("!!!User not Available!!!");
-
-        await user.destroy();
-        res.send(user);
+        const [user] = await sequelize.query('DELETE from `users` where id= ?',{
+            replacements: [id]
+        });
+        if(user.affectedRows === 0){
+            return res.status(404).send('User is not Available')
+        }
+        res.send("!!!User deleted successfully!!!");
     } catch (err) {
         res.status(500).send(err);
     }
