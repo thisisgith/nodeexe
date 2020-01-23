@@ -1,5 +1,5 @@
 const {DataTypes} = require('sequelize');
-const sequelize = require('../util/seq_database');
+const sequelize = require('../util/seq-database');
 const Joi = require('@hapi/joi');
 
 const Genre = sequelize.define('genre', {

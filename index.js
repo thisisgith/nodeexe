@@ -7,14 +7,18 @@ const config = require('config');
 const helmet = require('helmet');
 const compression = require('compression');
 
+const sequelize = require('./util/seq-database');
+
 const genres = require('./routes/genres');
-const sql_genres = require('./routes/sql_genres');
-const squ_genres = require('./routes/squ_genres');
 const customers = require('./routes/customers');
 const movies = require('./routes/movies');
 const rentals = require('./routes/rentals');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
+const sqlGenres = require('./routes/sql-genres');
+const squGenres = require('./routes/squ-genres');
+const squProducts = require('./routes/squ-products');
+const squUsers = require('./routes/squ-users');
 
 //for production security we use this packages
 app.use(helmet());
@@ -41,14 +45,19 @@ app.get('/',(req,res) => {
 
 //import the custom routes
 app.use('/api/genres/', genres);
-app.use('/api/sqlgenres/', sql_genres);
-app.use('/api/squgenres/', squ_genres);
 app.use('/api/movies', movies);
 app.use('/api/customers', customers);
 app.use('/api/rentals', rentals);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
- 
+app.use('/api/sqlgenres/', sqlGenres);
+app.use('/api/squGenres/', squGenres);
+app.use('/api/squProducts', squProducts);
+app.use('/api/squUsers', squUsers);
+
+//Sync method is used to create the tables automatically in sequelize if they dont exist
+sequelize.sync().then().catch((err)=>console.log(err));
+
 // Port assignment statement
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening to port : ${port}`));

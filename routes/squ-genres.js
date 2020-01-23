@@ -1,4 +1,4 @@
-const {Genre, validate} = require('../models/squ_genres');
+const {Genre, validate} = require('../models/squ-genres');
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');

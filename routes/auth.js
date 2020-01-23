@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User } = require('../models/users');
+const { User } = require('../models/squ-users');
 const bcrypt = require('bcryptjs');
 const Joi = require('@hapi/joi');
 
