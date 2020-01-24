@@ -19,6 +19,9 @@ const sqlGenres = require('./routes/sql-genres');
 const squGenres = require('./routes/squ-genres');
 const squProducts = require('./routes/squ-products');
 const squUsers = require('./routes/squ-users');
+// To create Association we are importing this
+const {Product} = require('./models/squ-products');
+const {User} = require('./models/squ-users');
 
 //for production security we use this packages
 app.use(helmet());
@@ -43,6 +46,13 @@ app.get('/',(req,res) => {
     res.send("Welcome to Practice Session");
 });
 
+//Adding the above middle for test the association using sequelize
+app.use( async (req, res, next)=> {
+    const user = await User.findByPk(1);
+    req.squUser = user;
+    next();
+});
+
 //import the custom routes
 app.use('/api/genres/', genres);
 app.use('/api/movies', movies);
@@ -55,8 +65,16 @@ app.use('/api/squGenres/', squGenres);
 app.use('/api/squProducts', squProducts);
 app.use('/api/squUsers', squUsers);
 
+//To Create one to many association 
+User.hasMany(Product);
+
+
 //Sync method is used to create the tables automatically in sequelize if they dont exist
-sequelize.sync().then().catch((err)=>console.log(err));
+sequelize
+    .sync()
+    // .sync({force: true}) --- to create the tables again
+    .then()
+    .catch((err)=>console.log(err));
 
 // Port assignment statement
 const port = process.env.PORT || 3000;

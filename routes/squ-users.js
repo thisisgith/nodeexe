@@ -1,4 +1,5 @@
 const { User, validate } = require('../models/squ-users');
+const { Product } = require('../models/squ-products');
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
@@ -9,6 +10,12 @@ const sequelize = require('../util/seq-database');
 router.get('/', auth, async (req, res) => {
     try {
         const [users] = await sequelize.query(' SELECT `id`, `name`, `email` FROM `users`');
+
+        // To get the associated row we can use the `include` key
+        // const users = await User.findAll({
+        //     include: Product
+        // });
+        
         res.send(users);
     } catch (err) {
         res.status(500).send(err.message);

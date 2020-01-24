@@ -28,10 +28,10 @@ const Product = sequelize.define('product', {
 
 function validate(body) {
     const schema = Joi.object({
-        title: Joi.string().min(3).max(10).required(),
+        title: Joi.string().min(3).max(20).required(),
         price: Joi.number().min(3).max(10).required(),
-        imageUrl: Joi.string().min(3).max(10).required(),
-        description: Joi.string().min(3).max(10).optional(),
+        imageUrl: Joi.string().min(3).max(20).required(),
+        description: Joi.string().min(3).max(266).optional(),
     });
 
     return schema.validate(body);
