@@ -75,7 +75,7 @@ router.post('/', async (req, res) => {
 });
 
 //We are writing this method to download a file
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req, res, next) => {
     const id = req.params.id;
     try {
         const file = await FileUpload.findByPk(id, {
@@ -89,12 +89,12 @@ router.delete('/:id', async (req, res) => {
         const filePath = file.filePath;
         fs.unlink(filePath, (err) => {
             if (err) {
-                throw err;
+                return next(err);
             }
-            file.destroy();
+            
+           file.destroy();
+           res.send(file);
         });
-        res.send(file);
-
     } catch (err) {
         res.status(500).send(err.message);
     }
