@@ -87,14 +87,9 @@ router.delete('/:id', async (req, res, next) => {
         }
 
         const filePath = file.filePath;
-        fs.unlink(filePath, (err) => {
-            if (err) {
-                return next(err);
-            }
-            
-           file.destroy();
-           res.send(file);
-        });
+        fs.unlink(filePath, (_err) => {});
+        await file.destroy();
+        res.send(file);
     } catch (err) {
         res.status(500).send(err.message);
     }
