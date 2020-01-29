@@ -68,6 +68,7 @@ Thumbs.db
 *.tar
 *.zip
 
-# Unwanted Files #
-##################
+# Unwanted Files and Folders#
+#############################
+/images
 package-lock.json
