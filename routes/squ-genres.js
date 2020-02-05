@@ -16,15 +16,17 @@ router.get('/', auth, async (req, res) => {
 
 });
 
+
+//Changed this get request to check how to use methods created using sequelize model
 router.get('/:id', auth,async (req,res) => {
     const id = req.params.id;
     try {
         const genre = await Genre.findByPk(id,{
-            attributes: ['name']
+            attributes: ['id','name']
         });
         if(!genre)
             return res.status(404).send("!!!Genre not Available!!!");
-        res.send(genre);
+        res.send(genre.getIdandName()); // method created using sequelize method , which can be used for token generation
     } catch (err) {
         res.status(500).send(err.message);
     }
